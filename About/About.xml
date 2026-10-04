@@ -6,7 +6,7 @@
   <supportedVersions><li>1.6</li></supportedVersions>
   <description>Unofficial fix for Yayo's Animation (Continued).
 
-Symptom: in long-running saves, job animations break. For example, a burning pawn rolling on the ground pops far to the bottom-right and slides back with a fixed facing, instead of rolling out and back while turning.
+Symptom: in long-running saves, job animations break for many pawns. A burning pawn rolling on the ground pops far to the bottom-right and slides back with a fixed facing, instead of rolling out and back while turning. Most work, social and idle animations simply stop playing; mining, chopping and eating wobble out of step.
 
 Cause: the animation frame is computed as (game ticks + pawn ID * 20) % length. Once the game tick count and pawn IDs get large enough, the sum overflows into a negative number, the remainder becomes negative, and the animation is stuck extrapolating its first segment.
 

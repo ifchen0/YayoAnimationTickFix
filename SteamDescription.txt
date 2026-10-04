@@ -1,11 +1,18 @@
 Unofficial fix for [url=https://steamcommunity.com/workshop/filedetails/?id=2877292196]Yayo's Animation (Continued)[/url].
 
-[h2]Job animations break in long-running saves[/h2]Once a save has been running long enough, Yayo's job animations stop playing correctly for newer pawns. The most visible case is a burning pawn rolling on the ground: instead of turning and rolling out and back, it pops far to the bottom-right, slides back to its spot with a fixed facing, and only turns in the last frame or two. Working, eating and socializing animations are affected the same way.
+[h2]Job animations break in long-running saves[/h2]Once a save has been running long enough, Yayo's job animations stop playing correctly for many pawns. The most visible case is a burning pawn rolling on the ground: instead of turning and rolling out and back, it pops far to the bottom-right, slides back to its spot with a fixed facing, and only turns in the last frame or two.
+
+Most other animations fail more quietly, so it is easy to think some pawns simply "don't animate":
+[list]
+[*][b]No animation at all:[/b] crafting, construction, research, cleaning, tending and other work; socializing; ritual crowds; idling; sowing.
+[*][b]Wrong rhythm:[/b] mining, chopping trees and the punching bag wobble instead of striking; eating, vomiting and hoopstone bob out of step.
+[/list]
+The idle, gentle wiggle and ancient foosball animations break for roughly half of all pawns once pawn IDs pass about 8 million, so they can be affected even in saves that are not especially old.
 
 There is no error in the log. It just starts happening some day, with no mod update to blame.
 
 [b]Cause:[/b]
-Yayo works out the current animation frame as [i](game ticks + pawn ID × 20) % animation length[/i]. When the game tick count and pawn IDs get large enough, the sum overflows a 32-bit integer and becomes negative, so the remainder is negative too. A negative frame keeps the animation stuck in its first segment and extrapolates it backwards, which is where the far-away pop comes from.
+Yayo works out the current animation frame as [i](game ticks + pawn ID × 20) % animation length[/i] (some animations multiply the offset by a further 13 or 27). When the game tick count and pawn IDs get large enough, the sum overflows a 32-bit integer and becomes negative, so the remainder is negative too. A negative frame keeps the animation stuck in its first segment: if that segment is a pause, nothing plays; if it is a movement, it is extrapolated backwards. The roll moves in a straight line, so it is pushed far away; the others use a sine curve and only wobble.
 
 Example from a real save: game ticks about 657 million, so a pawn's roll frame came out as -38 instead of 82.
 
@@ -14,7 +21,7 @@ Every remainder in Yayo's standing and laying animation code is replaced with a 
 
 [h2]Notes[/h2][list]
 [*]Safe to add to or remove from an existing save.
-[*]Only matters for long-running saves; on a fresh colony it has no effect.
+[*]On a fresh colony nothing is broken yet, so it has no visible effect there.
 [*]Load after Yayo's Animation (Continued).
 [/list]
 [hr][/hr]
