@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Yayo's Animation Tick Overflow Fix</name>
+  <author>ifchen0</author>
+  <packageId>ifchen0.yayoanimationtickfix</packageId>
+  <supportedVersions><li>1.6</li></supportedVersions>
+  <description>Unofficial fix for Yayo's Animation (Continued).
+
+Symptom: in long-running saves, job animations break. For example, a burning pawn rolling on the ground pops far to the bottom-right and slides back with a fixed facing, instead of rolling out and back while turning.
+
+Cause: the animation frame is computed as (game ticks + pawn ID * 20) % length. Once the game tick count and pawn IDs get large enough, the sum overflows into a negative number, the remainder becomes negative, and the animation is stuck extrapolating its first segment.
+
+Fix: the remainder in the standing and laying animation code is made non-negative. Nothing changes for saves where the overflow does not happen.
+
+Safe to add to or remove from an existing save.</description>
+  <modDependencies>
+    <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl></li>
+    <li><packageId>com.yayo.yayoAni.continued</packageId><displayName>Yayo's Animation (Continued)</displayName><steamWorkshopUrl>steam://url/CommunityFilePage/2877292196</steamWorkshopUrl></li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>com.yayo.yayoAni.continued</li>
+  </loadAfter>
+</ModMetaData>
