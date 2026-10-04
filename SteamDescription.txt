@@ -1,0 +1,21 @@
+Unofficial fix for [url=https://steamcommunity.com/workshop/filedetails/?id=2877292196]Yayo's Animation (Continued)[/url].
+
+[h2]Job animations break in long-running saves[/h2]Once a save has been running long enough, Yayo's job animations stop playing correctly for newer pawns. The most visible case is a burning pawn rolling on the ground: instead of turning and rolling out and back, it pops far to the bottom-right, slides back to its spot with a fixed facing, and only turns in the last frame or two. Working, eating and socializing animations are affected the same way.
+
+There is no error in the log. It just starts happening some day, with no mod update to blame.
+
+[b]Cause:[/b]
+Yayo works out the current animation frame as [i](game ticks + pawn ID × 20) % animation length[/i]. When the game tick count and pawn IDs get large enough, the sum overflows a 32-bit integer and becomes negative, so the remainder is negative too. A negative frame keeps the animation stuck in its first segment and extrapolates it backwards, which is where the far-away pop comes from.
+
+Example from a real save: game ticks about 657 million, so a pawn's roll frame came out as -38 instead of 82.
+
+[b]Fix:[/b]
+Every remainder in Yayo's standing and laying animation code is replaced with a non-negative one. Where no overflow happens, the result is exactly the same as before, so animations that already worked are unchanged.
+
+[h2]Notes[/h2][list]
+[*]Safe to add to or remove from an existing save.
+[*]Only matters for long-running saves; on a fresh colony it has no effect.
+[*]Load after Yayo's Animation (Continued).
+[/list]
+[hr][/hr]
+This mod was developed with the help of AI coding tools (Claude Code). Full source code is included in the Source folder for review.
