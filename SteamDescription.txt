@@ -21,8 +21,8 @@ Every remainder in Yayo's standing and laying animation code is replaced with a 
 
 [h2]Notes[/h2][list]
 [*]Safe to add to or remove from an existing save.
-[*]On a fresh colony nothing is broken yet, so it has no visible effect there.
+[*]Only matters for long-running saves; on a fresh colony it has no effect.
 [*]Load after Yayo's Animation (Continued).
 [/list]
 [hr][/hr]
-This mod was developed with the help of AI coding tools (Claude Code). Full source code is included in the Source folder for review.
+This mod was developed with the help of AI coding tools (Claude Code). Full source code is included in the Source folder and on [url=https://github.com/ifchen0/YayoAnimationTickFix]GitHub[/url] for review.
