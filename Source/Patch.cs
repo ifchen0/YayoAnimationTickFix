@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
+using RimWorld;
 using Verse;
 using YayoAnimation;
+using YayoAnimation.Data;
 
 namespace YayoAnimationTickFix
 {
@@ -50,6 +52,23 @@ namespace YayoAnimationTickFix
         {
             int r = value % divisor;
             return r < 0 ? r + divisor : r;
+        }
+    }
+
+    /// <summary>
+    /// For standing jobs Yayo has no animation for (e.g. custom jobs from other mods), AniStanding caches the facing
+    /// in fixedRot with nextUpdateTick = int.MaxValue, so it is never refreshed until the job changes. Rotation
+    /// changes made by the job driver mid-job are then drawn with the stale facing. Only that cached case is
+    /// invalidated when the facing differs; animations that set their own facing refresh on their own schedule.
+    /// </summary>
+    [HarmonyPatch(typeof(AnimationCore), nameof(AnimationCore.CheckAni))]
+    public static class Patch_AnimationCore_CheckAni
+    {
+        public static void Prefix(Pawn pawn, Rot4 rot, PawnDrawData pdd)
+        {
+            if (pdd.nextUpdateTick == int.MaxValue && pdd.fixedRot.HasValue && pdd.fixedRot.Value != rot
+                && pawn.GetPosture() == PawnPosture.Standing)
+                pdd.nextUpdateTick = int.MinValue;
         }
     }
 }

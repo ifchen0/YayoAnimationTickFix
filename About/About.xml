@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-  <name>Yayo's Animation Tick Overflow Fix</name>
+  <name>Yayo's Animation Fixes: Tick Overflow &amp; Custom Job Facing</name>
   <author>ifchen0</author>
   <packageId>ifchen0.yayoanimationtickfix</packageId>
   <url>https://github.com/ifchen0/YayoAnimationTickFix</url>
   <supportedVersions><li>1.6</li><li>1.7</li></supportedVersions>
-  <description>Unofficial fix for Yayo's Animation (Continued).
+  <description>Unofficial fixes for Yayo's Animation (Continued).
+
+1. Tick overflow
 
 Symptom: in long-running saves, job animations break for many pawns. A burning pawn rolling on the ground pops far to the bottom-right and slides back with a fixed facing, instead of rolling out and back while turning. Most work, social and idle animations simply stop playing; mining, chopping and eating wobble out of step.
 
 Cause: the animation frame is computed as (game ticks + pawn ID * 20) % length. Once the game tick count and pawn IDs get large enough, the sum overflows into a negative number, the remainder becomes negative, and the animation is stuck extrapolating its first segment.
 
 Fix: the remainder in the standing and laying animation code is made non-negative. Nothing changes for saves where the overflow does not happen.
+
+2. Custom job facing
+
+Symptom: during jobs Yayo has no animation for (often custom jobs from other mods), a pawn keeps the facing it had when the job started, even when the job turns it.
+
+Fix: the facing Yayo cached for such a job is refreshed whenever the pawn's real facing changes. Jobs with a Yayo animation are untouched.
 
 Safe to add to or remove from an existing save.</description>
   <modDependencies>
