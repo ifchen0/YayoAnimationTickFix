@@ -12,7 +12,7 @@ namespace YayoAnimationTickFix
     [StaticConstructorOnStartup]
     public static class Init
     {
-        static Init() => new Harmony("ifchen0.yayoanimationtickfix").PatchAll();
+        static Init() => new Harmony("ifchen0.yayoanimationtickfix").PatchAll(typeof(Init).Assembly);
     }
 
     /// <summary>
